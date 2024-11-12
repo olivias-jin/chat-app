@@ -66,7 +66,7 @@ const Start = ({ navigation }) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'flex-end', // 화면 하단으로 정렬
+        justifyContent: 'flex-end', // 화면 하단으로 정렬v 
 
     },
 
