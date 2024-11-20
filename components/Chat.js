@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, BackHandler, KeyboardAvoidingView, ImageBackground } from 'react-native';
-import { GiftedChat } from "react-native-gifted-chat";
+import { StyleSheet, View, Text, BackHandler, KeyboardAvoidingView, ImageBackground, Platform} from 'react-native';
+import { GiftedChat, Bubble} from "react-native-gifted-chat";
 
 
 const Chat = ({ route, navigation }) => {
@@ -15,7 +15,7 @@ const Chat = ({ route, navigation }) => {
             {
                 _id: 1,
                 text: "Hello developer",
-                createdAt: new Data(),
+                createdAt: new Date(),
                 user: {
                     _id: 2,
                     name: "React Native",
@@ -25,7 +25,7 @@ const Chat = ({ route, navigation }) => {
             {
                 _id: 2,
                 text: 'This is a system message',
-                createdAt: new Data(),
+                createdAt: new Date(),
                 system: true,
             },
         ]);
