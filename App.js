@@ -12,7 +12,27 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 // Create the navigator
 const Stack = createNativeStackNavigator();
 
+// import firebase
+import { initializeApp } from "firebase/app";
+import { getFirestore } from "firebase/firestore";
+
 const App = () => {
+  // Your web app's Firebase configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyA3_XzBqUgx9U_v2BnozF5JZAO-cS59nEc",
+    authDomain: "chatapp-a481d.firebaseapp.com",
+    projectId: "chatapp-a481d",
+    storageBucket: "chatapp-a481d.firebasestorage.app",
+    messagingSenderId: "64517601247",
+    appId: "1:64517601247:web:699cedb2597de1e24a766a"
+  };
+
+  // Initialize Firebase
+const app = initializeApp(firebaseConfig);
+
+// Initialize Cloud Firestore and get a reference to the service
+const db = getFirestore(app);
+
   return (
     <NavigationContainer>
       <Stack.Navigator
@@ -30,5 +50,6 @@ const App = () => {
     </NavigationContainer>
   );
 }
+
 
 export default App;

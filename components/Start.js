@@ -1,12 +1,25 @@
 import { useState } from 'react';
 import { StyleSheet, View, Text, Button, TextInput, ImageBackground, TouchableOpacity } from 'react-native';
-
+import { getAuth, signInAnonymously } from "firebase/auth";
 
 const Start = ({ navigation }) => {
+
     const [name, setName] = useState('');
     const [color, setColor] = useState('#FFFFFF');
 
     const colors = ['#090C08', '#474056', '#8A95A5', '#B9C6AE'];
+    const auth = getAuth();
+
+    const signInUser = () => {
+        signInAnonymously(auth)
+            .then(result => {
+                navigation.navigate("Start Chatting", { userID: result.user.uid });
+                Alert.alert("Signed in Successfully!");
+            })
+            .catch((error) => {
+                Alert.alert("Unable to sign in, try later again.");
+            })
+    }
 
     return (
         <View style={styles.container}>
