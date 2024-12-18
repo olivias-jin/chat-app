@@ -1,4 +1,4 @@
-import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
+import { collection, onSnapshot, orderBy, query, addDoc } from 'firebase/firestore';
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, BackHandler, KeyboardAvoidingView, ImageBackground, Platform } from 'react-native';
 import { GiftedChat, Bubble } from "react-native-gifted-chat";
