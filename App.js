@@ -12,17 +12,14 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 // Create the navigator
 const Stack = createNativeStackNavigator();
 
-// import firebase
+// import firebase and disableNetwork and enableNetwork
 import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
+import { getFirestore, disableNetwork, enableNetwork } from "firebase/firestore";
 
 // import Netinfo
 import { useNetInfo } from "@react-native-community/netinfo";
 import { useEffect } from "react";
 import { LogBox, Alert } from "react-native";
-
-// import disableNetwork and enableNetwork
-import { getFirestore, disableNetwork, enableNetwork } from "firebase/firestore";
 
 
 const App = () => {
