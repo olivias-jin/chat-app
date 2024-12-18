@@ -16,6 +16,15 @@ const Stack = createNativeStackNavigator();
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 
+// import Netinfo
+import { useNetInfo } from "@react-native-community/netinfo";
+import { useEffect } from "react";
+import { LogBox, Alert } from "react-native";
+
+// import disableNetwork and enableNetwork
+import { getFirestore, disableNetwork, enableNetwork } from "firebase/firestore";
+
+
 const App = () => {
   // Your web app's Firebase configuration
   const firebaseConfig = {
@@ -27,25 +36,41 @@ const App = () => {
     appId: "1:64517601247:web:699cedb2597de1e24a766a"
   };
 
-  // Initialize Firebase
-const app = initializeApp(firebaseConfig);
+  // use useNetInfo() to define a new state that represent the network connectivity status:
+  const connectionStatus = useNetInfo();
 
-// Initialize Cloud Firestore and get a reference to the service
-const db = getFirestore(app);
+  useEffect(() => {
+    if (connectionStatus.isConnected === false) {
+      Alert.alert("Connection Lost!");
+      disableNetwork(db);
+    } else if (connectionStatus.isConnected === true) {
+      enableNetwork(db);
+    }
+  }, [connectionStatus.isConnected]);
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+
+  // Initialize Cloud Firestore and get a reference to the service
+  const db = getFirestore(app);
 
   return (
     <NavigationContainer>
       <Stack.Navigator
         initialRouteName="Start"
       >
+
         <Stack.Screen
           name="Start"
           component={Start}
         />
+
         <Stack.Screen
-          name="Chat"
-          component={Chat}
-        />
+          name="Chat">
+          {props => <Chat isConnected={connectionStatus.isConnected}
+            db={db} {...props} />}
+        </Stack.Screen>
+
       </Stack.Navigator>
     </NavigationContainer>
   );
