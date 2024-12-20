@@ -7,13 +7,13 @@ const Start = ({ navigation }) => {
     const [name, setName] = useState('');
     const [color, setColor] = useState('#FFFFFF');
 
-    const colors = ['#090C08', '#474056', '#8A95A5', '#B9C6AE'];
+    const bgColor = ['#090C08', '#474056', '#8A95A5', '#B9C6AE'];
     const auth = getAuth();
 
     const signInUser = () => {
         signInAnonymously(auth)
             .then(result => {
-                navigation.navigate("Chat", { userID: result.user.uid });
+                navigation.navigate("Chat", { userID: result.user.uid, name: name, color: color });
                 Alert.alert("Signed in Successfully!");
             })
             .catch((error) => {
@@ -45,19 +45,19 @@ const Start = ({ navigation }) => {
                     <View>
                         <Text style={styles.textcolor}>Choose Background color:</Text>
                         <View style={styles.colorbutton}>
-                            {colors.map((bgColor) => (
+                            {bgColor.map((colorOption) => (
                                 <TouchableOpacity
-                                    key={bgColor}
+                                    key={colorOption}
                                     style={{
-                                        backgroundColor: bgColor,
+                                        backgroundColor: colorOption,
                                         width: 50,
                                         height: 50,
                                         margin: 5,
                                         borderRadius: 25,
-                                        borderColor: color === bgColor ? 'black' : 'transparent',
+                                        borderColor: color === colorOption ? 'black' : 'transparent',
                                         borderWidth: 2,
                                     }}
-                                    onPress={() => setColor(bgColor)}
+                                    onPress={() => setColor(colorOption)}
                                 />
                             ))}
                         </View>
