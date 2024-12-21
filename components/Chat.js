@@ -1,20 +1,24 @@
-import { collection, onSnapshot, orderBy, query, addDoc, where } from 'firebase/firestore';
-import React, { useState, useEffect } from 'react';
+import { collection, onSnapshot, orderBy, query, addDoc } from 'firebase/firestore';
+import { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, BackHandler, KeyboardAvoidingView, ImageBackground, Platform } from 'react-native';
-import { GiftedChat, Bubble, InputToolbar } from "react-native-gifted-chat";
+import { GiftedChat, Bubble, InputToolbar, renderActions } from "react-native-gifted-chat";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import CustomActions from './CustomActions';
+import MapView from 'react-native-maps';
+import { getAuth, signInAnonymously } from 'firebase/auth';
 
-const Chat = ({ route, navigation, db, isConnected }) => {
+const Chat = ({ route, navigation, storage, db, isConnected }) => {
     const [messages, setMessages] = useState([]);
     const { name, color, userID } = route.params;
 
     let unsubMessages;
+
     useEffect(() => {
+        navigation.setOptions({ title: name });
+
         if (isConnected === true) {
             if (unsubMessages) unsubMessages();
             unsubMessages = null;
-
-            navigation.setOptions({ title: name });
 
             const q = query(collection(db, "messages"), orderBy("createdAt", "desc"));
             unsubMessages = onSnapshot(q, (docs) => {
@@ -23,10 +27,10 @@ const Chat = ({ route, navigation, db, isConnected }) => {
                     newMessages.push({
                         id: doc.id, ...doc.data(), createdAt: new Date(doc.data().createdAt.toMillis())
                     })
-                });
+                })
                 cacheMessages(newMessages);
                 setMessages(newMessages);
-            });
+            })
         } else loadCachedMessages();
 
         // Clean up code
@@ -41,7 +45,7 @@ const Chat = ({ route, navigation, db, isConnected }) => {
         } catch (error) {
             console.log(error.message);
         }
-    };
+    }
 
     const loadCachedMessages = async () => {
         const cachedMessages = await AsyncStorage.getItem("messages") || [];
@@ -67,33 +71,87 @@ const Chat = ({ route, navigation, db, isConnected }) => {
     }
 
     const renderInputToolbar = (props) => {
-        if (isConnected)
+        if (isConnected === true)
             return <InputToolbar {...props} />;
         else
             return null;
     }
 
+    // creating the circle button
+    const renderCustomActions = (props) => {
+        return <CustomActions storage={storage} userID={userID} onSend={onSend} {...props} />;
+    };
+
+
+    const renderCustomView = (props) => {
+        const { currentMessage } = props;
+        if (currentMessage.location) {
+            return (
+                <MapView
+                    style={{
+                        width: 150,
+                        height: 100,
+                        borderRadius: 13,
+                        margin: 3
+                    }}
+                    region={{
+                        latitude: currentMessage.location.latitude,
+                        longitude: currentMessage.location.longitude,
+                        latitudeDelta: 0.0922,
+                        longitudeDelta: 0.0421,
+                    }}
+                />
+            );
+        }
+        return null;
+    };
+
+// Sign in anonymously
+const auth = getAuth();
+signInAnonymously(auth)
+    .then(() => {
+        console.log("User signed in anonymously");
+        // Now proceed with uploading images
+    })
+    .catch((error) => {
+        console.error("Error signing in:", error);
+    });
+
     return (
-        <View style={{ flex: 1, backgroundColor: color }}>
+        <View style={[styles.container, { backgroundColor: color }]}>
             <GiftedChat
                 messages={messages}
                 renderBubble={renderBubble}
-                onSend={messages => onSend(messages)}
-                user={{
-                    _id: userID
-                }}
                 renderInputToolbar={renderInputToolbar}
+                onSend={messages => onSend(messages)}
+                renderActions={renderCustomActions}
+                renderCustomView={renderCustomView}
+                user={{
+                    _id: userID,
+                    name
+                }}
             />
+
             {Platform.OS === "ios" ? <KeyboardAvoidingView behavior="padding" /> : null}
         </View>
     );
-};
+}
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center'
+        flex: 1
+    },
+    logoutButton: {
+        position: "absolute",
+        right: 0,
+        top: 0,
+        backgroundColor: "#C00",
+        padding: 10,
+        zIndex: 1
+    },
+    logoutButtonText: {
+        color: "#FFF",
+        fontSize: 10
     }
 });
 
