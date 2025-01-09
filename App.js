@@ -16,10 +16,6 @@ import { useNetInfo } from "@react-native-community/netinfo";
 import { useEffect } from "react";
 import { LogBox, Alert } from "react-native";
 
-// Impoprt environment variables from @env
-const config = require('./config.json')
-
-
 // Ignore all logs (optional)
 LogBox.ignoreLogs(["AsyncStorage has been extracted from"]);
 
@@ -30,13 +26,16 @@ const App = () => {
   // Your web app's Firebase configuration
 
   const firebaseConfig = {
-    apiKey: config.REACT_APP_FIREBASE_API_KEY,
-    authDomain: config.REACT_APP_FIREBASE_AUTH_DOMAIN,
-    projectId: config.REACT_APP_FIREBASE_PROJECT_ID,
-    storageBucket: config.REACT_APP_FIREBASE_STORAGE_BUCKET,
-    messagingSenderId: config.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
-    appId: config.REACT_APP_FIREBASE_APP_ID
+    apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+    authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+    projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
+    storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+    appId: process.env.REACT_APP_FIREBASE_APP_ID
   };
+
+  // Debugging configuration
+  console.log("Firebase Config:", firebaseConfig);
 
   // use useNetInfo() to define a new state that represent the network connectivity status:
   const connectionStatus = useNetInfo();
@@ -72,10 +71,10 @@ const App = () => {
         <Stack.Screen
           name="Chat">
           {props =>
-              <Chat isConnected={connectionStatus.isConnected}
-                db={db}
-                storage={storage}
-                {...props} />
+            <Chat isConnected={connectionStatus.isConnected}
+              db={db}
+              storage={storage}
+              {...props} />
           }
         </Stack.Screen>
       </Stack.Navigator>
