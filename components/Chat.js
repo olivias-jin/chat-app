@@ -25,9 +25,11 @@ const Chat = ({ route, navigation, storage, db, isConnected }) => {
                 let newMessages = [];
                 docs.forEach(doc => {
                     newMessages.push({
-                        id: doc.id, ...doc.data(), createdAt: new Date(doc.data().createdAt.toMillis())
+                        id: doc.id,
+                        ...doc.data(),
+                        createdAt: new Date(doc.data().createdAt.toMillis())
                     })
-                })
+                });
                 cacheMessages(newMessages);
                 setMessages(newMessages);
             })
@@ -54,10 +56,10 @@ const Chat = ({ route, navigation, storage, db, isConnected }) => {
 
     const onSend = (newMessages) => {
         addDoc(collection(db, "messages"), newMessages[0])
-    };
+    }
 
     const renderBubble = (props) => {
-        return <Bubble
+        return (<Bubble
             {...props}
             wrapperStyle={{
                 right: {
@@ -68,6 +70,7 @@ const Chat = ({ route, navigation, storage, db, isConnected }) => {
                 }
             }}
         />
+        );
     }
 
     const renderInputToolbar = (props) => {
@@ -79,7 +82,7 @@ const Chat = ({ route, navigation, storage, db, isConnected }) => {
 
     // creating the circle button
     const renderCustomActions = (props) => {
-        return <CustomActions storage={storage} userID={userID} onSend={onSend} {...props} />;
+        return <CustomActions storage={storage} userID={userID} onSend={(message) => onSend([message])} {...props} />;
     };
 
 
@@ -104,18 +107,18 @@ const Chat = ({ route, navigation, storage, db, isConnected }) => {
             );
         }
         return null;
-    };
+    }
 
-// Sign in anonymously
-const auth = getAuth();
-signInAnonymously(auth)
-    .then(() => {
-        console.log("User signed in anonymously");
-        // Now proceed with uploading images
-    })
-    .catch((error) => {
-        console.error("Error signing in:", error);
-    });
+    // Sign in anonymously 
+    const auth = getAuth();
+    signInAnonymously(auth)
+        .then(() => {
+            console.log("User signed in anonymously");
+            // Now proceed with uploading images
+        })
+        .catch((error) => {
+            console.error("Error signing in:", error);
+        });
 
     return (
         <View style={[styles.container, { backgroundColor: color }]}>
@@ -128,11 +131,12 @@ signInAnonymously(auth)
                 renderCustomView={renderCustomView}
                 user={{
                     _id: userID,
-                    name
+                    name: name,
                 }}
             />
 
             {Platform.OS === "ios" ? <KeyboardAvoidingView behavior="padding" /> : null}
+            {Platform.OS === 'android' ? <KeyboardAvoidingView behavior="height" /> : null}
         </View>
     );
 }

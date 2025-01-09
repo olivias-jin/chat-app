@@ -16,6 +16,18 @@ import { useNetInfo } from "@react-native-community/netinfo";
 import { useEffect } from "react";
 import { LogBox, Alert } from "react-native";
 
+// Impoprt environment variables from @env
+import Config from 'react-native-config';
+
+// import {
+//   REACT_APP_FIREBASE_API_KEY,
+//   REACT_APP_FIREBASE_AUTH_DOMAIN,
+//   REACT_APP_FIREBASE_PROJECT_ID,
+//   REACT_APP_FIREBASE_STORAGE_BUCKET,
+//   REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+//   REACT_APP_FIREBASE_APP_ID
+// } from "@env";
+
 // Create the navigator
 const Stack = createNativeStackNavigator();
 
@@ -23,9 +35,17 @@ LogBox.ignoreLogs(["AsyncStorage has been extracted from"]);
 
 const App = () => {
   // Your web app's Firebase configuration
+
   const firebaseConfig = {
+    // apiKey: Config.REACT_APP_FIREBASE_API_KEY,
+    // authDomain: Config.REACT_APP_FIREBASE_AUTH_DOMAIN,
+    // projectId: Config.REACT_APP_FIREBASE_PROJECT_ID,
+    // storageBucket: Config.REACT_APP_FIREBASE_STORAGE_BUCKET,
+    // messagingSenderId: Config.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+    // appId: Config.REACT_APP_FIREBASE_APP_ID,
+
     apiKey: "AIzaSyA3_XzBqUgx9U_v2BnozF5JZAO-cS59nEc",
-    authDomain: "chatapp-a481d.firebaseapp.com",
+    authDomainauthDomain: "chatapp-a481d.firebaseapp.com",
     projectId: "chatapp-a481d",
     storageBucket: "chatapp-a481d.firebasestorage.app",
     messagingSenderId: "64517601247",

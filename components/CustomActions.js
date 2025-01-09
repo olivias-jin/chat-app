@@ -4,13 +4,13 @@ import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import * as ImagePicker from 'expo-image-picker';
 import * as Location from 'expo-location';
 
-const CustomActions = ({ wrapperStyle, iconTextStyle, onSend, storage }) => {
+const CustomActions = ({ wrapperStyle, iconTextStyle, onSend, storage, userID }) => {
     const actionSheet = useActionSheet();
 
     const onActionPress = () => {
         const options = ['Choose From Library', 'Take Picture', 'Send Location', 'Cancel'];
-
         const cancelButtonIndex = options.length - 1;
+
         actionSheet.showActionSheetWithOptions(
             {
                 options,
@@ -37,7 +37,7 @@ const CustomActions = ({ wrapperStyle, iconTextStyle, onSend, storage }) => {
         const timeStamp = (new Date()).getTime();
         const imageName = uri.split("/")[uri.split("/").length - 1];
         return `${userID}-${timeStamp}-${imageName}`;
-    }
+    };
 
     // Function to upload an image to Firebase Storage and send its URL
     const uploadAndSendImage = async (imageURI) => {
@@ -50,62 +50,61 @@ const CustomActions = ({ wrapperStyle, iconTextStyle, onSend, storage }) => {
             const imageURL = await getDownloadURL(snapshot.ref);
             onSend({ image: imageURL });
         });
-    }
-
+    };
 
     // Function to pick an image from the device's media library
     const pickImage = async () => {
         let permissions = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        console.log('Image Library Permissions:', permissions);
         if (permissions?.granted) {
-          let result = await ImagePicker.launchImageLibraryAsync();
-          if (!result.canceled) await uploadAndSendImage(result.assets[0].uri);
-          else Alert.alert("Permissions haven't been granted.");
-        }
-      }
+            let result = await ImagePicker.launchImageLibraryAsync();
+            console.log('Image pick result:', result);
+            if (!result.canceled) await uploadAndSendImage(result.assets[0].uri);
+        } else Alert.alert("Permissions haven't been granted.");
+    };
 
+    // Function to take a photo using the device's camera
+    const takePhoto = async () => {
+        let permissions = await ImagePicker.requestCameraPermissionsAsync();
+        console.log('Camera Permission Status: ', permissions);
+        if (permissions?.granted) {
+            let result = await ImagePicker.launchCameraAsync();
+            if (!result.canceled) await uploadAndSendImage(result.assets[0].uri);
+        } else Alert.alert("Permissions haven't been granted.");
+    };
 
-};
+    // Get device's location data
+    const getLocation = async () => {
+        let permissions = await Location.requestForegroundPermissionsAsync();
+        console.log("Permission granted:", permissions.granted);
+        if (permissions?.granted) {
+            const location = await Location.getCurrentPositionAsync({});
+            console.log("Location fetched:", location);
+            if (location) {
+                console.log("Sending location:", location.coords);
+                onSend({
+                    location: {
+                        longitude: location.coords.longitude,
+                        latitude: location.coords.latitude,
+                    },
+                });
+            } else { Alert.alert("Error occurred while fetching location"); }
+        } else { Alert.alert("Permissions haven't been granted."); }
+    };
 
-
-// Function to take a photo using the device's camera
-const takePhoto = async () => {
-    let permissions = await ImagePicker.requestCameraPermissionsAsync();
-    if (permissions?.granted) {
-        let result = await ImagePicker.launchCameraAsync();
-        if (!result.canceled) await uploadAndSendImage(result.assets[0].uri);
-    } else Alert.alert("Permissions haven't been granted.");
-};
-
-
-// Get device's location data
-const getLocation = async () => {
-    let permission = await Location.requestForegroundPermissionsAsync();
-    if (permission?.granted) {
-        let location = await Location.getCurrentPositionAsync({});
-        if (location) {
-            onSend({
-                location: {
-                    longitude: location.coords.longitude,
-                    latitude: location.coords.latitude,
-                },
-            });
-        } else Alert.alert("Error occurred while fetching location");
-    } else Alert.alert("Permissions haven't been granted.");
-};
-
-return (
-    <TouchableOpacity
-        accessible={true}
-        accessibilityLabel="More options"
-        accessibilityHint="Lets you choose to send an image or your geolocation."
-        accessibilityRole="button"
-        style={styles.container}
-        onPress={onActionPress}>
-        <View style={[styles.wrapper, wrapperStyle]}>
-            <Text style={[styles.iconText, iconTextStyle]}>+</Text>
-        </View>
-    </TouchableOpacity>
-);
+    return (
+        <TouchableOpacity
+            accessible={true}
+            accessibilityLabel="More options"
+            accessibilityHint="Lets you choose to send an image or your geolocation."
+            accessibilityRole="button"
+            style={styles.container}
+            onPress={onActionPress}>
+            <View style={[styles.wrapper, wrapperStyle]}>
+                <Text style={[styles.iconText, iconTextStyle]}>+</Text>
+            </View>
+        </TouchableOpacity>
+    );
 }
 
 const styles = StyleSheet.create({
