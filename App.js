@@ -17,39 +17,25 @@ import { useEffect } from "react";
 import { LogBox, Alert } from "react-native";
 
 // Impoprt environment variables from @env
-import Config from 'react-native-config';
+const config = require('./config.json')
 
-// import {
-//   REACT_APP_FIREBASE_API_KEY,
-//   REACT_APP_FIREBASE_AUTH_DOMAIN,
-//   REACT_APP_FIREBASE_PROJECT_ID,
-//   REACT_APP_FIREBASE_STORAGE_BUCKET,
-//   REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
-//   REACT_APP_FIREBASE_APP_ID
-// } from "@env";
+
+// Ignore all logs (optional)
+LogBox.ignoreLogs(["AsyncStorage has been extracted from"]);
 
 // Create the navigator
 const Stack = createNativeStackNavigator();
-
-LogBox.ignoreLogs(["AsyncStorage has been extracted from"]);
 
 const App = () => {
   // Your web app's Firebase configuration
 
   const firebaseConfig = {
-    // apiKey: Config.REACT_APP_FIREBASE_API_KEY,
-    // authDomain: Config.REACT_APP_FIREBASE_AUTH_DOMAIN,
-    // projectId: Config.REACT_APP_FIREBASE_PROJECT_ID,
-    // storageBucket: Config.REACT_APP_FIREBASE_STORAGE_BUCKET,
-    // messagingSenderId: Config.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
-    // appId: Config.REACT_APP_FIREBASE_APP_ID,
-
-    apiKey: "AIzaSyA3_XzBqUgx9U_v2BnozF5JZAO-cS59nEc",
-    authDomainauthDomain: "chatapp-a481d.firebaseapp.com",
-    projectId: "chatapp-a481d",
-    storageBucket: "chatapp-a481d.firebasestorage.app",
-    messagingSenderId: "64517601247",
-    appId: "1:64517601247:web:699cedb2597de1e24a766a"
+    apiKey: config.REACT_APP_FIREBASE_API_KEY,
+    authDomain: config.REACT_APP_FIREBASE_AUTH_DOMAIN,
+    projectId: config.REACT_APP_FIREBASE_PROJECT_ID,
+    storageBucket: config.REACT_APP_FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: config.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+    appId: config.REACT_APP_FIREBASE_APP_ID
   };
 
   // use useNetInfo() to define a new state that represent the network connectivity status:
@@ -78,7 +64,6 @@ const App = () => {
       <Stack.Navigator
         initialRouteName="Start"
       >
-
         <Stack.Screen
           name="Start"
           component={Start}
@@ -86,12 +71,13 @@ const App = () => {
 
         <Stack.Screen
           name="Chat">
-          {props => <Chat isConnected={connectionStatus.isConnected}
-            db={db}
-            storage={storage}
-            {...props} />}
+          {props =>
+              <Chat isConnected={connectionStatus.isConnected}
+                db={db}
+                storage={storage}
+                {...props} />
+          }
         </Stack.Screen>
-
       </Stack.Navigator>
     </NavigationContainer>
   );
