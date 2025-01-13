@@ -47,8 +47,15 @@ const CustomActions = ({ wrapperStyle, iconTextStyle, onSend, storage, userID })
         // Convert the image data into a Blob
         const blob = await response.blob();
         uploadBytes(newUploadRef, blob).then(async (snapshot) => {
-            const imageURL = await getDownloadURL(snapshot.ref);
-            onSend({ image: imageURL });
+            try {
+                const imageURL = await getDownloadURL(snapshot.ref);
+                onSend({ image: imageURL });
+            } catch (error) {
+                console.log('Error getting download URL:', error);
+            }
+        })
+        .catch((error) => {
+            console.log('Error during image upload:', error);
         });
     };
 

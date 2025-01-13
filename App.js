@@ -23,22 +23,18 @@ LogBox.ignoreLogs(["AsyncStorage has been extracted from"]);
 const Stack = createNativeStackNavigator();
 
 const App = () => {
-  // Your web app's Firebase configuration
-
-  const firebaseConfig = {
-    apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
-    authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
-    projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
-    storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
-    messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
-    appId: process.env.REACT_APP_FIREBASE_APP_ID
-  };
-
-  // Debugging configuration
-  console.log("Firebase Config:", firebaseConfig);
-
   // use useNetInfo() to define a new state that represent the network connectivity status:
   const connectionStatus = useNetInfo();
+
+  // Your web app's Firebase configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyA3_XzBqUgx9U_v2BnozF5JZAO-cS59nEc",
+    authDomainauthDomain: "chatapp-a481d.firebaseapp.com",
+    projectId: "chatapp-a481d",
+    storageBucket: "chatapp-a481d.firebasestorage.app",
+    messagingSenderId: "64517601247",
+    appId: "1:64517601247:web:699cedb2597de1e24a766a"
+  };
 
   // Initialize Firebase
   const app = initializeApp(firebaseConfig);
@@ -48,6 +44,9 @@ const App = () => {
 
   // Initialise handler to Firebase storage and get a reference to storage location
   const storage = getStorage(app);
+
+  // // Debugging configuration
+  // console.log("Firebase Config:", firebaseConfig);
 
   useEffect(() => {
     if (connectionStatus.isConnected === false) {
@@ -81,7 +80,5 @@ const App = () => {
     </NavigationContainer>
   );
 }
-
-
 
 export default App;
