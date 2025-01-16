@@ -49,7 +49,7 @@ const CustomActions = ({ wrapperStyle, iconTextStyle, onSend, storage, userID })
         uploadBytes(newUploadRef, blob).then(async (snapshot) => {
             try {
                 const imageURL = await getDownloadURL(snapshot.ref);
-                onSend({ image: imageURL });
+                onSend({ image: imageURL, _id: uniqueRefString });
             } catch (error) {
                 console.log('Error getting download URL:', error);
             }
@@ -94,6 +94,7 @@ const CustomActions = ({ wrapperStyle, iconTextStyle, onSend, storage, userID })
                         longitude: location.coords.longitude,
                         latitude: location.coords.latitude,
                     },
+                    _id: ""
                 });
             } else { Alert.alert("Error occurred while fetching location"); }
         } else { Alert.alert("Permissions haven't been granted."); }

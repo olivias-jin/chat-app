@@ -55,8 +55,14 @@ const Chat = ({ route, navigation, storage, db, isConnected }) => {
     }
 
     const onSend = (newMessages) => {
-        addDoc(collection(db, "messages"), newMessages[0])
-    }
+        addDoc(collection(db, "messages"), { user: { _id: userID, name: name }, createdAt:new Date(), ...newMessages[0] })
+        .then(()=> {
+            console.log("Message sent successfully!");
+        })
+        .catch((error)=> {
+            console.error("Error sending message: ", error);
+        });
+    };
 
     const renderBubble = (props) => {
         return (<Bubble
